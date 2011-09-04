@@ -1,3 +1,6 @@
+/**
+ * @file Term.cpp
+ */
 #include "Term.h"
 #include "Context.h"
 #include <iostream>
@@ -8,6 +11,7 @@
 
 using namespace std::rel_ops;
 
+/// Map of builtin operations to their names.
 std::map<std::string, int32_t> Term::operations {
 	{ "def",     DEF },
 	{ "dup",     DUP },
@@ -32,10 +36,20 @@ std::map<std::string, int32_t> Term::operations {
 	{ "cond",    COND }
 };
 
+/**
+ * Constructs an empty array Term.
+ */
 Term::Term() : type(SPECIAL), tag(ARRAY) {}
 
+/**
+ * Constructs a scalar Term.
+ * @param value Scalar value.
+ */
 Term::Term(int32_t value) : type(SCALAR), tag(value) {}
 
+/**
+ * Constructs a Term from the given token string.
+ */
 Term::Term(const std::string& token) {
 	auto operation = operations.find(token);
 	if (operation != operations.end()) {
@@ -60,6 +74,10 @@ Term::Term(const std::string& token) {
 	}
 }
 
+/**
+ * Evaluates a Term.
+ * @param context Evaluation context.
+ */
 void Term::operator()(Context& context) {
 	if (is_value()) {
 		context.push(shared_from_this());
@@ -212,6 +230,10 @@ void Term::operator()(Context& context) {
 	}
 }
 
+/**
+ * Applies a Term to the stack.
+ * @param context Evaluation context.
+ */
 void Term::apply(Context& context) {
 	if (is_scalar()) {
 		(*this)(context);
@@ -221,6 +243,9 @@ void Term::apply(Context& context) {
 	}
 }
 
+/**
+ * Adds Terms.
+ */
 Term& Term::operator+=(const Term& other) {
 	if (is_scalar()) {
 		if (other.is_scalar()) {
@@ -242,6 +267,9 @@ Term& Term::operator+=(const Term& other) {
 	return *this;
 }
 
+/**
+ * Subtracts Terms.
+ */
 Term& Term::operator-=(const Term& other) {
 	if (is_scalar() && other.is_scalar())
 		tag -= other.tag;
@@ -250,6 +278,9 @@ Term& Term::operator-=(const Term& other) {
 	return *this;
 }
 
+/**
+ * Multiplies Terms.
+ */
 Term& Term::operator*=(const Term& other) {
 	if (is_scalar()) {
 		if (other.is_scalar()) {
@@ -278,6 +309,9 @@ Term& Term::operator*=(const Term& other) {
 	return *this;
 }
 
+/**
+ * Divides Terms.
+ */
 Term& Term::operator/=(const Term& other) {
 	if (is_scalar() && other.is_scalar())
 		tag /= other.tag;
@@ -286,6 +320,9 @@ Term& Term::operator/=(const Term& other) {
 	return *this;
 }
 
+/**
+ * Modulates Terms.
+ */
 Term& Term::operator%=(const Term& other) {
 	if (is_scalar() && other.is_scalar())
 		tag %= other.tag;
@@ -301,7 +338,7 @@ Term operator/(Term a, const Term& b) { return a /= b; }
 Term operator%(Term a, const Term& b) { return a %= b; }
 
 /**
- * Sorts terms: scalars directly, arrays recursively (and lexicographically).
+ * Sorts Terms: scalars directly, arrays recursively (and lexicographically).
  */
 bool operator<(const Term& a, const Term& b) {
 	if (a.is_scalar() && b.is_scalar()) {
@@ -323,7 +360,7 @@ bool operator<(const Term& a, const Term& b) {
 }
 
 /**
- * Tests equality of terms: scalars directly, arrays recursively.
+ * Tests equality of Terms: scalars directly, arrays recursively.
  */
 bool operator==(const Term& a, const Term& b) {
 	if (a.is_scalar()) {
@@ -344,7 +381,7 @@ bool operator==(const Term& a, const Term& b) {
 }
 
 /**
- * Writes a term to a stream.
+ * Writes a Term to a stream.
  */
 std::ostream& operator<<(std::ostream& stream, const Term& term) {
 	if (term.is_value()) {
@@ -369,7 +406,7 @@ std::ostream& operator<<(std::ostream& stream, const Term& term) {
 }
 
 /**
- * Tests whether a term represents a value.
+ * Tests whether a Term represents a value.
  */
 bool Term::is_value() const {
 	return type == SCALAR
@@ -377,7 +414,7 @@ bool Term::is_value() const {
 }
 
 /**
- * Tests whether a term is a scalar value.
+ * Tests whether a Term is a scalar value.
  */
 bool Term::is_scalar() const {
 	return type == SCALAR;

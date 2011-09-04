@@ -1,3 +1,6 @@
+/**
+ * @file Context.h
+ */
 #ifndef CONTEXT_H
 #define CONTEXT_H
 #include <iosfwd>
@@ -6,7 +9,7 @@
 #include "Term.h"
 
 /**
- * An execution context.
+ * An execution context in which Terms are evaluated.
  */
 class Context {
 	std::stack<std::shared_ptr<Term>> stack;

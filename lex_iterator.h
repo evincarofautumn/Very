@@ -1,3 +1,6 @@
+/**
+ * @file lex_iterator.h
+ */
 #ifndef LEX_ITERATOR_H
 #define LEX_ITERATOR_H
 #include <utf8.h>
@@ -6,6 +9,7 @@
 
 /**
  * A forward iterator to convert a UTF-32 character sequence to UTF-8 tokens.
+ * @tparam B Bidirectional iterator type.
  */
 template <class B>
 class lex_iterator :
@@ -57,7 +61,7 @@ std::string lex_iterator<B>::operator*() const {
 }
 
 /**
- * Compares two lex_iterators for equality. The token must be tested to
+ * Compares lex_iterator for equality. The token must be tested to
  * differentiate between pre- and post-EOF iterators.
  */
 template<class B>
@@ -65,6 +69,9 @@ bool lex_iterator<B>::operator==(const lex_iterator<B>& other) const {
 	return here == other.here && token.empty() == other.token.empty();
 }
 
+/**
+ * Compares lex_iterator for inequality.
+ */
 template<class B>
 bool lex_iterator<B>::operator!=(const lex_iterator<B>& other) const {
 	return !(*this == other);
@@ -149,6 +156,9 @@ lex_iterator<B>& lex_iterator<B>::operator++() {
 
 }
 
+/**
+ * Post-increment to satisfy iterator interface.
+ */
 template<class B>
 lex_iterator<B> lex_iterator<B>::operator++(int) {
 	lex_iterator<B> temp(*this);
@@ -156,11 +166,20 @@ lex_iterator<B> lex_iterator<B>::operator++(int) {
 	return temp;
 }
 
+/**
+ * At-the-end test.
+ */
 template<class B>
 bool lex_iterator<B>::at_end() const {
 	return here == end;
 }
 
+/**
+ * Outputs a single character if it matches a predicate.
+ * @param  predicate Predicate functor.
+ * @param  output    Output iterator.
+ * @return Whether a character matched.
+ */
 template<class B>
 template<class P, class O>
 bool lex_iterator<B>::single(P predicate, O output) {
@@ -171,6 +190,12 @@ bool lex_iterator<B>::single(P predicate, O output) {
 	return false;
 }
 
+/**
+ * Outputs multiple characters while they match a predicate.
+ * @param  predicate Predicate functor.
+ * @param  output    Output iterator.
+ * @return Whether at least one character matched.
+ */
 template<class B>
 template<class P, class O>
 bool lex_iterator<B>::multiple(P predicate, O output) {
@@ -182,23 +207,36 @@ bool lex_iterator<B>::multiple(P predicate, O output) {
 	return matched;
 }
 
+/**
+ * Predicate function for matching valid identifier characters.
+ */
 template<class B>
 bool lex_iterator<B>::is_word(uint32_t c) {
 	return std::string(" \n\r\t\v()#").find(c) == std::string::npos;
 }
 
+/**
+ * Predicate function for matching a literal character.
+ */
 template<class B>
 template<uint32_t C>
 bool lex_iterator<B>::is(uint32_t c) {
 	return c == C;
 }
 
+/**
+ * Predicate function for matching anything other than the given character.
+ */
 template<class B>
 template<uint32_t C>
 bool lex_iterator<B>::is_not(uint32_t c) {
 	return c != C;
 }
 
+/**
+ * Predicate function to match any character.
+ * @return @c true
+ */
 template<class B>
 bool lex_iterator<B>::any(uint32_t) {
 	return true;

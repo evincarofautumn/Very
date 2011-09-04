@@ -1,3 +1,6 @@
+/**
+ * @file ignore_iterator.h
+ */
 #ifndef IGNORE_ITERATOR_H
 #define IGNORE_ITERATOR_H
 
