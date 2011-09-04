@@ -1,0 +1,7 @@
+INTRODUCTION
+
+Very is a simple, high-performance functional language intended for web
+development. It's a dynamically typed, concatenative, lazy language with
+homoiconic syntax and a powerful macro system, closely related to Forth and
+Lisp. It provides convenient tools for generating HTML, CSS, JavaScript, and
+other content.
