@@ -13,7 +13,7 @@ using namespace std::rel_ops;
 
 /// Map of builtin operations to their names.
 std::map<std::string, int32_t> Term::operations {
-	{ "def",     DEF },
+	{ "_def",    DEF },
 	{ "dup",     DUP },
 	{ "pop",     POP },
 	{ "swap",    SWAP },
