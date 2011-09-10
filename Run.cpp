@@ -19,6 +19,7 @@ Run::Run() {
 	defs["stdin"]  = std::make_shared<Term>(0);
 	defs["stdout"] = std::make_shared<Term>(1);
 	defs["stderr"] = std::make_shared<Term>(2);
+	defs["_token"] = std::make_shared<Term>();
 }
 
 /**

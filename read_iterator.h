@@ -3,7 +3,9 @@
  */
 #ifndef READ_ITERATOR_H
 #define READ_ITERATOR_H
+#include "Read.h"
 #include <utf8.h>
+#include <deque>
 #include <iterator>
 #include <string>
 
@@ -14,9 +16,10 @@
 template <class B>
 class read_iterator :
 	public std::iterator<std::forward_iterator_tag, std::string> {
+	Read context;
 	B here;
 	B end;
-	std::string token;
+	std::deque<std::string> tokens;
 public:
 	read_iterator();
 	read_iterator(B, B = B());
@@ -57,7 +60,7 @@ read_iterator<B>::read_iterator(B first, B last)
  */
 template<class B>
 std::string read_iterator<B>::operator*() const {
-	return token;
+	return tokens.front();
 }
 
 /**
@@ -66,7 +69,7 @@ std::string read_iterator<B>::operator*() const {
  */
 template<class B>
 bool read_iterator<B>::operator==(const read_iterator<B>& other) const {
-	return here == other.here && token.empty() == other.token.empty();
+	return here == other.here && tokens.empty() == other.tokens.empty();
 }
 
 /**
@@ -83,9 +86,12 @@ bool read_iterator<B>::operator!=(const read_iterator<B>& other) const {
 template<class B>
 read_iterator<B>& read_iterator<B>::operator++() {
 
-	token.clear();
-	if (at_end()) return *this;
+	if (at_end()) {
+		if (!tokens.empty()) tokens.pop_front();
+		return *this;
+	}
 
+	std::string token;
 	auto accept = std::back_inserter(token);
 
 	// Ignore whitespace and comments.
@@ -108,7 +114,11 @@ read_iterator<B>& read_iterator<B>::operator++() {
 			}
 		}
 	}
-	if (at_end()) return *this;
+
+	if (at_end()) {
+		if (!tokens.empty()) tokens.pop_front();
+		return *this;
+	}
 
 	// Accept strings.
 	if (single(is<'"'>, accept)) {
@@ -144,14 +154,62 @@ read_iterator<B>& read_iterator<B>::operator++() {
 
 		}
 
+		if (!tokens.empty()) tokens.pop_front();
+		tokens.push_back(token);
 		return *this;
 
 	}
 
-	single(is<'('>, accept)
-		|| single(is<')'>, accept)
-		|| multiple(is_word, accept);
+	if (!(single(is<'('>, accept) || single(is<')'>, accept))) {
+		multiple(is_word, accept);
+		if (token == "_token") {
+			if (tokens.empty())
+				throw std::runtime_error("Expected token definition.");
+			if (tokens.back()[0] != '"')
+				throw std::runtime_error("Expected quoted token definition.");
+			if (tokens.back().size() == 1)
+				throw std::runtime_error("Invalid token definition.");
+			context.def(tokens.back().substr(1));
+		} else {
+			while (!token.empty()) {
+				std::string maximum;
+				std::string normal;
+				while (!token.empty()) {
+					maximum.clear();
+					for (auto i = context.begin(); i != context.end(); ++i)
+						if (std::equal(i->begin(), i->end(), token.begin())) {
+							if (maximum.size() < i->size())
+								maximum = *i;
+						}
+					if (maximum.empty()) {
+						auto first = token.begin();
+						utf8::append(utf8::next(first, token.end()),
+							std::back_inserter(normal));
+						token = std::string(first, token.end());
+					} else {
+						break;
+					}
+				}
+				if (!normal.empty()) {
+					tokens.push_back(normal);
+					normal.clear();
+				}
+				if (!maximum.empty()) {
+					tokens.push_back(maximum);
+					auto first = token.begin();
+					utf8::advance(first,
+						utf8::distance(maximum.begin(), maximum.end()),
+						token.end());
+					token = std::string(first, token.end());
+				}
+			}
+			if (!tokens.empty()) tokens.pop_front();
+			return *this;
+		}
+	}
 
+	if (!tokens.empty()) tokens.pop_front();
+	tokens.push_back(token);
 	return *this;
 
 }
