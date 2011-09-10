@@ -9,7 +9,7 @@
 #include "ignore_iterator.h"
 #include "read_iterator.h"
 #include "run_iterator.h"
-#include "term_iterator.h"
+#include "parse_iterator.h"
 #include <algorithm>
 #include <utf8.h>
 
@@ -17,7 +17,7 @@ typedef std::istreambuf_iterator  <char>      loader;
 typedef buffer_iterator           <loader>    bufferer;
 typedef utf8::unchecked::iterator <bufferer>  converter;
 typedef read_iterator             <converter> reader;
-typedef term_iterator             <reader>    parser;
+typedef parse_iterator            <reader>    parser;
 typedef run_iterator              <parser>    interpreter;
 
 /**
