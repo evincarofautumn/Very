@@ -12,17 +12,17 @@
 template<class I>
 class run_iterator
 	: public std::iterator<std::forward_iterator_tag, Run> {
-	Run context;
+	mutable Run context;
 	I here;
 	I end;
 public:
 	run_iterator() {}
 	run_iterator(I, I = I());
-	run_iterator& operator*();
+	const run_iterator& operator*() const;
 	run_iterator& operator++();
 	run_iterator operator++(int);
-	bool operator==(const run_iterator&);
-	bool operator!=(const run_iterator&);
+	bool operator==(const run_iterator&) const;
+	bool operator!=(const run_iterator&) const;
 };
 
 /**
@@ -38,7 +38,7 @@ run_iterator<I>::run_iterator(I first, I last)
  * Evaluates the current Term in the current runtime context.
  */
 template<class I>
-run_iterator<I>& run_iterator<I>::operator*() {
+const run_iterator<I>& run_iterator<I>::operator*() const {
 	(**here)(context);
 	return *this;
 }
@@ -66,7 +66,7 @@ run_iterator<I> run_iterator<I>::operator++(int) {
  * Compares run_iterator for equality.
  */
 template<class I>
-bool run_iterator<I>::operator==(const run_iterator<I>& other) {
+bool run_iterator<I>::operator==(const run_iterator<I>& other) const {
 	return here == other.here;
 }
 
@@ -74,7 +74,7 @@ bool run_iterator<I>::operator==(const run_iterator<I>& other) {
  * Compares run_iterator for inequality.
  */
 template<class I>
-bool run_iterator<I>::operator!=(const run_iterator<I>& other) {
+bool run_iterator<I>::operator!=(const run_iterator<I>& other) const {
 	return !(*this == other);
 }
 

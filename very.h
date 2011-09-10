@@ -6,10 +6,11 @@
 #ifndef VERY_H
 #define VERY_H
 #include "buffer_iterator.h"
+#include "expand_iterator.h"
 #include "ignore_iterator.h"
+#include "parse_iterator.h"
 #include "read_iterator.h"
 #include "run_iterator.h"
-#include "parse_iterator.h"
 #include <algorithm>
 #include <utf8.h>
 
@@ -18,7 +19,8 @@ typedef buffer_iterator           <loader>    bufferer;
 typedef utf8::unchecked::iterator <bufferer>  converter;
 typedef read_iterator             <converter> reader;
 typedef parse_iterator            <reader>    parser;
-typedef run_iterator              <parser>    interpreter;
+typedef expand_iterator           <parser>    expander;
+typedef run_iterator              <expander>  interpreter;
 
 /**
  * Runs through an iterator range, sending output to an ignore iterator.

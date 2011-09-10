@@ -18,7 +18,8 @@ int main(int argc, char** argv) try {
 		throw std::runtime_error("Invalid command line.");
 
 	std::ifstream stream(argv[0]);
-	force(interpreter(parser(reader(converter(bufferer(loader(stream)))))));
+	force(interpreter(expander(parser(reader
+		(converter(bufferer(loader(stream))))))));
 
 } catch (const std::runtime_error& error) {
 

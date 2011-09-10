@@ -18,8 +18,8 @@ public:
 	parse_iterator();
 	parse_iterator(I, I = I());
 	std::shared_ptr<Term> operator*() const;
-	bool operator==(const parse_iterator&);
-	bool operator!=(const parse_iterator&);
+	bool operator==(const parse_iterator&) const;
+	bool operator!=(const parse_iterator&) const;
 	parse_iterator& operator++();
 	parse_iterator operator++(int);
 };
@@ -65,7 +65,7 @@ std::shared_ptr<Term> parse_iterator<I>::operator*() const {
  * Compares parse_iterator for equality.
  */
 template<class I>
-bool parse_iterator<I>::operator==(const parse_iterator<I>& other) {
+bool parse_iterator<I>::operator==(const parse_iterator<I>& other) const {
 	return *source == *other.source;
 }
 
@@ -73,7 +73,7 @@ bool parse_iterator<I>::operator==(const parse_iterator<I>& other) {
  * Compares parse_iterator for inequality.
  */
 template<class I>
-bool parse_iterator<I>::operator!=(const parse_iterator<I>& other) {
+bool parse_iterator<I>::operator!=(const parse_iterator<I>& other) const {
 	return !(*this == other);
 }
 
