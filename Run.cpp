@@ -1,16 +1,16 @@
 /**
- * @file Context.cpp
+ * @file Run.cpp
  */
-#include "Context.h"
+#include "Run.h"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
 #include <utf8.h>
 
 /**
- * Constructs a default Context with initial constants and ports.
+ * Constructs a default runtime context with initial constants and ports.
  */
-Context::Context() {
+Run::Run() {
 	ports.push_back(&std::cin);
 	ports.push_back(&std::cout);
 	ports.push_back(&std::cerr);
@@ -24,7 +24,7 @@ Context::Context() {
 /**
  * Maps a name to a value.
  */
-void Context::def(std::shared_ptr<Term> raw_name, std::shared_ptr<Term> body) {
+void Run::def(std::shared_ptr<Term> raw_name, std::shared_ptr<Term> body) {
 	std::string name;
 	for (auto i = raw_name->values.begin(); i != raw_name->values.end(); ++i)
 		utf8::append((*i)->tag, std::back_inserter(name));
@@ -37,7 +37,7 @@ void Context::def(std::shared_ptr<Term> raw_name, std::shared_ptr<Term> body) {
 	defs[name] = body;
 }
 
-std::shared_ptr<Term> Context::get(std::shared_ptr<Term> raw_name) {
+std::shared_ptr<Term> Run::get(std::shared_ptr<Term> raw_name) {
 	std::string name;
 	for (auto i = raw_name->values.begin(); i != raw_name->values.end(); ++i)
 		utf8::append((*i)->tag, std::back_inserter(name));
@@ -53,7 +53,7 @@ std::shared_ptr<Term> Context::get(std::shared_ptr<Term> raw_name) {
 /**
  * Yields the top element of the stack without removing it.
  */
-std::shared_ptr<Term> Context::peek() const {
+std::shared_ptr<Term> Run::peek() const {
 	if (stack.empty())
 		return std::make_shared<Term>();
 	return stack.top();
@@ -62,7 +62,7 @@ std::shared_ptr<Term> Context::peek() const {
 /**
  * Yields the top element of the stack and removes it.
  */
-std::shared_ptr<Term> Context::pop() {
+std::shared_ptr<Term> Run::pop() {
 	if (stack.empty())
 		return std::make_shared<Term>();
 	auto top = stack.top();
@@ -73,7 +73,7 @@ std::shared_ptr<Term> Context::pop() {
 /**
  * Gets the input stream associated with the given port number.
  */
-std::istream& Context::input_port(uint32_t index) {
+std::istream& Run::input_port(uint32_t index) {
 	if (index >= ports.size())
 		throw std::runtime_error("Invalid port number.");
 	if (ports[index].type == OSTREAM)
@@ -84,7 +84,7 @@ std::istream& Context::input_port(uint32_t index) {
 /**
  * Gets the output stream associated with the given port number.
  */
-std::ostream& Context::output_port(uint32_t index) {
+std::ostream& Run::output_port(uint32_t index) {
 	if (index >= ports.size())
 		throw std::runtime_error("Invalid port number.");
 	if (ports[index].type == ISTREAM)
@@ -95,6 +95,6 @@ std::ostream& Context::output_port(uint32_t index) {
 /**
  * Pushes the given value to the stack.
  */
-void Context::push(std::shared_ptr<Term> value) {
+void Run::push(std::shared_ptr<Term> value) {
 	stack.push(value);
 }

@@ -1,8 +1,8 @@
 /**
- * @file Context.h
+ * @file Run.h
  */
-#ifndef CONTEXT_H
-#define CONTEXT_H
+#ifndef RUN_H
+#define RUN_H
 #include <iosfwd>
 #include <memory>
 #include <stack>
@@ -11,7 +11,7 @@
 /**
  * An execution context in which Terms are evaluated.
  */
-class Context {
+class Run {
 	std::stack<std::shared_ptr<Term>> stack;
 	std::map<std::string, std::shared_ptr<Term>> defs;
 	enum stream_type {
@@ -33,7 +33,7 @@ class Context {
 	};
 	std::vector<stream> ports;
 public:
-	Context();
+	Run();
 	void def(std::shared_ptr<Term>, std::shared_ptr<Term>);
 	std::shared_ptr<Term> get(std::shared_ptr<Term>);
 	std::shared_ptr<Term> peek() const;

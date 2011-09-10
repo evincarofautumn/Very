@@ -1,8 +1,8 @@
 /**
- * @file lex_iterator.h
+ * @file read_iterator.h
  */
-#ifndef LEX_ITERATOR_H
-#define LEX_ITERATOR_H
+#ifndef READ_ITERATOR_H
+#define READ_ITERATOR_H
 #include <utf8.h>
 #include <iterator>
 #include <string>
@@ -12,19 +12,19 @@
  * @tparam B Bidirectional iterator type.
  */
 template <class B>
-class lex_iterator :
+class read_iterator :
 	public std::iterator<std::forward_iterator_tag, std::string> {
 	B here;
 	B end;
 	std::string token;
 public:
-	lex_iterator();
-	lex_iterator(B, B = B());
+	read_iterator();
+	read_iterator(B, B = B());
 	std::string operator*() const;
-	bool operator==(const lex_iterator& other) const;
-	bool operator!=(const lex_iterator& other) const;
-	lex_iterator& operator++();
-	lex_iterator operator++(int);
+	bool operator==(const read_iterator&) const;
+	bool operator!=(const read_iterator&) const;
+	read_iterator& operator++();
+	read_iterator operator++(int);
 private:
 	bool at_end() const;
 	static bool any(uint32_t);
@@ -37,16 +37,16 @@ private:
 };
 
 /**
- * Constructs a past-the-end lex_iterator.
+ * Constructs a past-the-end read_iterator.
  */
 template<class B>
-lex_iterator<B>::lex_iterator() {}
+read_iterator<B>::read_iterator() {}
 
 /**
  * Ignores any BOM and seeks to the first token.
  */
 template<class B>
-lex_iterator<B>::lex_iterator(B first, B last)
+read_iterator<B>::read_iterator(B first, B last)
 	: here(first), end(last) {
 	single(is<0xFEFF>);
 	++*this;
@@ -56,24 +56,24 @@ lex_iterator<B>::lex_iterator(B first, B last)
  * Returns the current token.
  */
 template<class B>
-std::string lex_iterator<B>::operator*() const {
+std::string read_iterator<B>::operator*() const {
 	return token;
 }
 
 /**
- * Compares lex_iterator for equality. The token must be tested to
+ * Compares read_iterator for equality. The token must be tested to
  * differentiate between pre- and post-EOF iterators.
  */
 template<class B>
-bool lex_iterator<B>::operator==(const lex_iterator<B>& other) const {
+bool read_iterator<B>::operator==(const read_iterator<B>& other) const {
 	return here == other.here && token.empty() == other.token.empty();
 }
 
 /**
- * Compares lex_iterator for inequality.
+ * Compares read_iterator for inequality.
  */
 template<class B>
-bool lex_iterator<B>::operator!=(const lex_iterator<B>& other) const {
+bool read_iterator<B>::operator!=(const read_iterator<B>& other) const {
 	return !(*this == other);
 }
 
@@ -81,7 +81,7 @@ bool lex_iterator<B>::operator!=(const lex_iterator<B>& other) const {
  * Moves to the next token.
  */
 template<class B>
-lex_iterator<B>& lex_iterator<B>::operator++() {
+read_iterator<B>& read_iterator<B>::operator++() {
 
 	token.clear();
 	if (at_end()) return *this;
@@ -160,8 +160,8 @@ lex_iterator<B>& lex_iterator<B>::operator++() {
  * Post-increment to satisfy iterator interface.
  */
 template<class B>
-lex_iterator<B> lex_iterator<B>::operator++(int) {
-	lex_iterator<B> temp(*this);
+read_iterator<B> read_iterator<B>::operator++(int) {
+	read_iterator<B> temp(*this);
 	++*this;
 	return temp;
 }
@@ -170,7 +170,7 @@ lex_iterator<B> lex_iterator<B>::operator++(int) {
  * At-the-end test.
  */
 template<class B>
-bool lex_iterator<B>::at_end() const {
+bool read_iterator<B>::at_end() const {
 	return here == end;
 }
 
@@ -182,7 +182,7 @@ bool lex_iterator<B>::at_end() const {
  */
 template<class B>
 template<class P, class O>
-bool lex_iterator<B>::single(P predicate, O output) {
+bool read_iterator<B>::single(P predicate, O output) {
 	if (!at_end() && predicate(*here)) {
 		utf8::append(*here++, output);
 		return true;
@@ -198,7 +198,7 @@ bool lex_iterator<B>::single(P predicate, O output) {
  */
 template<class B>
 template<class P, class O>
-bool lex_iterator<B>::multiple(P predicate, O output) {
+bool read_iterator<B>::multiple(P predicate, O output) {
 	bool matched = false;
 	while (!at_end() && predicate(*here)) {
 		matched = true;
@@ -211,7 +211,7 @@ bool lex_iterator<B>::multiple(P predicate, O output) {
  * Predicate function for matching valid identifier characters.
  */
 template<class B>
-bool lex_iterator<B>::is_word(uint32_t c) {
+bool read_iterator<B>::is_word(uint32_t c) {
 	return std::string(" \n\r\t\v()#").find(c) == std::string::npos;
 }
 
@@ -220,7 +220,7 @@ bool lex_iterator<B>::is_word(uint32_t c) {
  */
 template<class B>
 template<uint32_t C>
-bool lex_iterator<B>::is(uint32_t c) {
+bool read_iterator<B>::is(uint32_t c) {
 	return c == C;
 }
 
@@ -229,7 +229,7 @@ bool lex_iterator<B>::is(uint32_t c) {
  */
 template<class B>
 template<uint32_t C>
-bool lex_iterator<B>::is_not(uint32_t c) {
+bool read_iterator<B>::is_not(uint32_t c) {
 	return c != C;
 }
 
@@ -238,7 +238,7 @@ bool lex_iterator<B>::is_not(uint32_t c) {
  * @return @c true
  */
 template<class B>
-bool lex_iterator<B>::any(uint32_t) {
+bool read_iterator<B>::any(uint32_t) {
 	return true;
 }
 

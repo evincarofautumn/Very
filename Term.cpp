@@ -2,7 +2,7 @@
  * @file Term.cpp
  */
 #include "Term.h"
-#include "Context.h"
+#include "Run.h"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -78,7 +78,7 @@ Term::Term(const std::string& token) {
  * Evaluates a Term.
  * @param context Evaluation context.
  */
-void Term::operator()(Context& context) {
+void Term::operator()(Run& context) {
 	if (is_value()) {
 		context.push(shared_from_this());
 		return;
@@ -139,86 +139,27 @@ void Term::operator()(Context& context) {
 			}
 			break;
 		}
-	case COMPOSE:
-	case ADD:
-		{
-			auto b = context.pop();
-			auto a = context.pop();
-			context.push(std::make_shared<Term>(*a + *b));
-			break;
+#define OPERATOR_TERM(id, symbol)                               \
+	case id:                                                    \
+		{                                                       \
+			auto b = context.pop();                             \
+			auto a = context.pop();                             \
+			context.push(std::make_shared<Term>(*a symbol *b)); \
+			break;                                              \
 		}
-	case SUB:
-		{
-			auto b = context.pop();
-			auto a = context.pop();
-			context.push(std::make_shared<Term>(*a - *b));
-			break;
-		}
-	case MUL:
-		{
-			auto b = context.pop();
-			auto a = context.pop();
-			context.push(std::make_shared<Term>(*a * *b));
-			break;
-		}
-		break;
-	case DIV:
-		{
-			auto b = context.pop();
-			auto a = context.pop();
-			context.push(std::make_shared<Term>(*a / *b));
-			break;
-		}
-		break;
-	case MOD:
-		{
-			auto b = context.pop();
-			auto a = context.pop();
-			context.push(std::make_shared<Term>(*a % *b));
-			break;
-		}
-	case LT:
-		{
-			auto b = context.pop();
-			auto a = context.pop();
-			context.push(std::make_shared<Term>(*a < *b));
-			break;
-		}
-	case GT:
-		{
-			auto b = context.pop();
-			auto a = context.pop();
-			context.push(std::make_shared<Term>(*a > *b));
-			break;
-		}
-	case LE:
-		{
-			auto b = context.pop();
-			auto a = context.pop();
-			context.push(std::make_shared<Term>(*a <= *b));
-			break;
-		}
-	case GE:
-		{
-			auto b = context.pop();
-			auto a = context.pop();
-			context.push(std::make_shared<Term>(*a >= *b));
-			break;
-		}
-	case EQ:
-		{
-			auto b = context.pop();
-			auto a = context.pop();
-			context.push(std::make_shared<Term>(*a == *b));
-			break;
-		}
-	case NE:
-		{
-			auto b = context.pop();
-			auto a = context.pop();
-			context.push(std::make_shared<Term>(*a != *b));
-			break;
-		}
+	OPERATOR_TERM(COMPOSE, +)
+	OPERATOR_TERM(ADD, +)
+	OPERATOR_TERM(SUB, -)
+	OPERATOR_TERM(MUL, *)
+	OPERATOR_TERM(DIV, /)
+	OPERATOR_TERM(MOD, %)
+	OPERATOR_TERM(LT, <)
+	OPERATOR_TERM(GT, >)
+	OPERATOR_TERM(LE, <=)
+	OPERATOR_TERM(GE, >=)
+	OPERATOR_TERM(EQ, ==)
+	OPERATOR_TERM(NE, !=)
+#undef OPERATOR_TERM
 	case COND:
 		{
 			auto else_body = context.pop();
@@ -234,7 +175,7 @@ void Term::operator()(Context& context) {
  * Applies a Term to the stack.
  * @param context Evaluation context.
  */
-void Term::apply(Context& context) {
+void Term::apply(Run& context) {
 	if (is_scalar()) {
 		(*this)(context);
 	} else {
