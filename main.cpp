@@ -18,8 +18,14 @@ int main(int argc, char** argv) try {
 		throw std::runtime_error("Invalid command line.");
 
 	std::ifstream stream(argv[0]);
-	force(interpreter(expander(parser(reader
-		(converter(bufferer(loader(stream))))))));
+	input_stack input(stream);
+	token_stack<input_stack> tokens(input);
+	while (!tokens.empty()) {
+		utf8::utf32to8(tokens.top().begin(), tokens.top().end(),
+			std::ostreambuf_iterator<char>(std::cout));
+		std::cout << '\n';
+		tokens.pop();
+	}
 
 } catch (const std::runtime_error& error) {
 
