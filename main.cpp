@@ -21,10 +21,8 @@ int main(int argc, char** argv) try {
 	input_stack input(stream);
 	token_stack<decltype(input)> tokens(input);
 	term_stack<decltype(tokens)> terms(tokens);
-	while (!terms.empty()) {
-		std::cout << *terms.top() << '\n';
-		terms.pop();
-	}
+	run_stack<decltype(terms)> run(terms);
+	force(run);
 
 } catch (const std::runtime_error& error) {
 
