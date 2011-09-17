@@ -7,7 +7,7 @@
 
 /**
  * Lazily evaluates a Term stack.
- * @tparam S Input stack type.
+ * @tparam S Source stack type.
  */
 template<class S>
 class run_stack {
@@ -26,11 +26,17 @@ public:
 template<class S>
 run_stack<S>::run_stack(S& stack) : source(stack) {}
 
+/**
+ * End-of-range test.
+ */
 template<class S>
 bool run_stack<S>::empty() const {
 	return source.empty();
 }
 
+/**
+ * Evaluates and removes the top Term.
+ */
 template<class S>
 void run_stack<S>::pop() {
 	(*source.top())(context);

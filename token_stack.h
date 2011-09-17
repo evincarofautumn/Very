@@ -10,7 +10,7 @@
 #include <string>
 
 /**
- * A stack to convert a UTF-32 character sequence to UTF-8 tokens.
+ * Converts a UTF-32 character sequence to UTF-8 tokens.
  * @tparam S Source stack type.
  */
 template <class S>
@@ -20,9 +20,9 @@ class token_stack {
 	Read                    context;
 public:
 	token_stack(S&);
-	bool               empty() const;
-	void               pop();
-	void               push(const std::string&);
+	bool empty() const;
+	void pop();
+	void push(const std::string&);
 	const std::string& top() const;
 private:
 	void read();
@@ -36,33 +36,51 @@ private:
 	template<class P, class O = ignore_iterator> bool multiple(P, O = O());
 };
 
+/**
+ * Ignores any BOM and gets the first token.
+ */
 template<class S>
 token_stack<S>::token_stack(S& stack) : source(stack) {
 	single(is<0xFEFF>);
 	read();
 }
 
+/**
+ * End-of-range test.
+ */
 template<class S>
 bool token_stack<S>::empty() const {
 	return buffer.empty();
 }
 
+/**
+ * Removes the first token.
+ */
 template<class S>
 void token_stack<S>::pop() {
 	buffer.pop_front();
 	read();
 }
 
+/**
+ * Ungets a token.
+ */
 template<class S>
 void token_stack<S>::push(const std::string& token) {
 	buffer.push_front(token);
 }
 
+/**
+ * Gets the current token.
+ */
 template<class S>
 const std::string& token_stack<S>::top() const {
 	return buffer.front();
 }
 
+/**
+ * Reads a token from the source.
+ */
 template<class S>
 void token_stack<S>::read() {
 
@@ -131,6 +149,9 @@ void token_stack<S>::read() {
 
 }
 
+/**
+ * Ignores whitespace and comments.
+ */
 template<class S>
 void token_stack<S>::ignore_silence() {
 	bool matched = true;
@@ -154,6 +175,9 @@ void token_stack<S>::ignore_silence() {
 	}
 }
 
+/**
+ * Accepts a string token.
+ */
 template<class S>
 template<class O>
 bool token_stack<S>::accept_string(O accept) {
@@ -177,28 +201,43 @@ bool token_stack<S>::accept_string(O accept) {
 	return true;
 }
 
+/**
+ * Matches any character.
+ */
 template<class S>
 bool token_stack<S>::any(uint32_t) {
 	return true;
 }
 
+/**
+ * Matches a given character.
+ */
 template<class S>
 template<uint32_t C>
 bool token_stack<S>::is(uint32_t c) {
 	return c == C;
 }
 
+/**
+ * Matches anything but a given character.
+ */
 template<class S>
 template<uint32_t C>
 bool token_stack<S>::is_not(uint32_t c) {
 	return c != C;
 }
 
+/**
+ * Matches a word (identifier) character.
+ */
 template<class S>
 bool token_stack<S>::is_word(uint32_t c) {
 	return std::string(" \n\r\t\v()#").find(c) == std::string::npos;
 }
 
+/**
+ * Accepts a single character matching a predicate.
+ */
 template<class S>
 template<class P, class O>
 bool token_stack<S>::single(P predicate, O output) {
@@ -210,6 +249,9 @@ bool token_stack<S>::single(P predicate, O output) {
 	return false;
 }
 
+/**
+ * Accepts multiple characters matching a predicate.
+ */
 template<class S>
 template<class P, class O>
 bool token_stack<S>::multiple(P predicate, O output) {

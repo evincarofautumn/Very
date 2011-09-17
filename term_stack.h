@@ -1,9 +1,16 @@
+/**
+ * @file term_stack.h
+ */
 #ifndef TERM_STACK_H
 #define TERM_STACK_H
 #include "Term.h"
 #include <deque>
 #include <memory>
 
+/**
+ * Parses a token sequence into terms.
+ * @tparam S Source stack type.
+ */
 template<class S>
 class term_stack {
 	std::shared_ptr<S> source;
@@ -19,33 +26,51 @@ private:
 	void read();
 };
 
+/**
+ * Gets the first Term from the source.
+ */
 template<class S>
 term_stack<S>::term_stack(S& stack)
 	: source(new S(stack)), buffer(new buffer_type()) {
 	read();
 }
 
+/**
+ * End-of-range test.
+ */
 template<class S>
 bool term_stack<S>::empty() const {
 	return buffer->empty();
 }
 
+/**
+ * Removes the current Term.
+ */
 template<class S>
 void term_stack<S>::pop() {
 	buffer->pop_front();
 }
 
+/**
+ * Ungets a Term.
+ */
 template<class S>
 void term_stack<S>::push(std::shared_ptr<Term> term) {
 	buffer->push_front(term);
 }
 
+/**
+ * Gets the current Term.
+ */
 template<class S>
 std::shared_ptr<Term> term_stack<S>::top() {
 	read();
 	return buffer->front();
 }
 
+/**
+ * Reads a (possibly nested) Term from the source.
+ */
 template<class S>
 void term_stack<S>::read() {
 	if (source->empty()) return;
