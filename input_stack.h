@@ -9,10 +9,10 @@ class input_stack {
 	std::deque<uint32_t> buffer;
 public:
 	input_stack(std::istream&);
-	void push(uint32_t);
-	void pop();
-	uint32_t top() const;
 	bool empty() const;
+	void pop();
+	void push(uint32_t);
+	uint32_t top() const;
 private:
 	void read();
 };

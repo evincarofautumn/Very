@@ -19,12 +19,11 @@ int main(int argc, char** argv) try {
 
 	std::ifstream stream(argv[0]);
 	input_stack input(stream);
-	token_stack<input_stack> tokens(input);
-	while (!tokens.empty()) {
-		utf8::utf32to8(tokens.top().begin(), tokens.top().end(),
-			std::ostreambuf_iterator<char>(std::cout));
-		std::cout << '\n';
-		tokens.pop();
+	token_stack<decltype(input)> tokens(input);
+	term_stack<decltype(tokens)> terms(tokens);
+	while (!terms.empty()) {
+		std::cout << *terms.top() << '\n';
+		terms.pop();
 	}
 
 } catch (const std::runtime_error& error) {

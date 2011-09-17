@@ -7,6 +7,7 @@
 #define VERY_H
 #include "input_stack.h"
 #include "token_stack.h"
+#include "term_stack.h"
 
 /**
  * Forces lazy computation expressed through stack composition.

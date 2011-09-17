@@ -5,8 +5,8 @@ input_stack::input_stack(std::istream& stream) : source(stream) {
 	read();
 }
 
-void input_stack::push(uint32_t c) {
-	buffer.push_front(c);
+bool input_stack::empty() const {
+	return buffer.empty();
 }
 
 void input_stack::pop() {
@@ -14,12 +14,12 @@ void input_stack::pop() {
 	read();
 }
 
-uint32_t input_stack::top() const {
-	return buffer.front();
+void input_stack::push(uint32_t c) {
+	buffer.push_front(c);
 }
 
-bool input_stack::empty() const {
-	return buffer.empty();
+uint32_t input_stack::top() const {
+	return buffer.front();
 }
 
 void input_stack::read() {
