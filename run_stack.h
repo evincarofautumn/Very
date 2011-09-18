@@ -3,7 +3,6 @@
  */
 #ifndef RUN_STACK_H
 #define RUN_STACK_H
-#include "Run.h"
 
 class Context;
 
