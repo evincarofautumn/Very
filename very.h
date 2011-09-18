@@ -6,6 +6,7 @@
 #include "Reader.h"
 #include "Tokenizer.h"
 #include "Parser.h"
+#include "Expander.h"
 #include "Interpreter.h"
 
 /**

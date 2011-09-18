@@ -1,12 +1,12 @@
 #include "Interpreter.h"
 #include "Term.h"
-#include "Parser.h"
+#include "Expander.h"
 
 /**
  * Constructs a run_iterator from a range.
  * @param stack Source stack.
  */
-Interpreter::Interpreter(Parser& stack, Context& context)
+Interpreter::Interpreter(Expander& stack, Context& context)
 	: source(stack), context(context) {}
 
 /**

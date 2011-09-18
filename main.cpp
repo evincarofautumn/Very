@@ -22,7 +22,8 @@ int main(int argc, char** argv) try {
 	Reader reader(stream);
 	Tokenizer tokenizer(reader, context);
 	Parser parser(tokenizer);
-	Interpreter interpreter(parser, context);
+	Expander expander(parser, context);
+	Interpreter interpreter(expander, context);
 	force(interpreter);
 
 } catch (const std::runtime_error& error) {

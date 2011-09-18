@@ -17,7 +17,6 @@ Context::Context() {
 	words["stdin"]  = std::make_shared<Term>(0);
 	words["stdout"] = std::make_shared<Term>(1);
 	words["stderr"] = std::make_shared<Term>(2);
-	words["_token"] = std::make_shared<Term>();
 }
 
 /**
@@ -40,8 +39,17 @@ void Context::define_word
 /**
  * Makes a character sequence function as a token.
  */
-void Context::define_token(const std::string& token) {
-	tokens.push_back(token);
+void Context::define_token(std::shared_ptr<Term> raw_name) {
+	std::string name;
+	for (auto i = raw_name->values.begin(); i != raw_name->values.end(); ++i)
+		utf8::append((*i)->tag, std::back_inserter(name));
+	auto existing = std::find(tokens.begin(), tokens.end(), name);
+	if (existing != tokens.end()) {
+		std::ostringstream message;
+		message << "Redefinition of token \"" << name << "\".";
+		throw std::runtime_error(message.str());
+	}
+	tokens.push_back(name);
 	std::sort(tokens.begin(), tokens.end());
 }
 

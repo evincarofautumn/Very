@@ -5,16 +5,16 @@
 #define INTERPRETER_H
 
 class Context;
-class Parser;
+class Expander;
 
 /**
  * Lazily evaluates a Term stack.
  */
 class Interpreter {
-	Parser& source;
+	Expander& source;
 	Context& context;
 public:
-	Interpreter(Parser&, Context&);
+	Interpreter(Expander&, Context&);
 	bool empty() const;
 	void pop();
 };

@@ -39,7 +39,7 @@ public:
 	Context();
 
 	void define_word(std::shared_ptr<Term>, std::shared_ptr<Term>);
-	void define_token(const std::string&);
+	void define_token(std::shared_ptr<Term>);
 
 	std::istream& get_input_port(uint32_t);
 	std::ostream& get_output_port(uint32_t);

@@ -60,52 +60,39 @@ void Tokenizer::read() {
 
 	multiple(is_word, accept);
 
-	if (token == "_token") {
-		if (buffer.empty())
-			throw std::runtime_error("Expected token definition.");
-		if (buffer.front()[0] != '"')
-			throw std::runtime_error("Expected quoted token definition.");
-		if (buffer.front().size() == 1)
-			throw std::runtime_error("Invalid token definition.");
-		context.define_token(buffer.front().substr(1));
-	} else {
+	while (!token.empty()) {
+		std::string maximum;
+		std::string normal;
 		while (!token.empty()) {
-			std::string maximum;
-			std::string normal;
-			while (!token.empty()) {
-				maximum.clear();
-				for (auto i = context.tokens_begin();
-					i != context.tokens_end(); ++i)
-					if (std::equal(i->begin(), i->end(), token.begin())) {
-						if (maximum.size() < i->size())
-							maximum = *i;
-					}
-				if (maximum.empty()) {
-					auto first = token.begin();
-					utf8::append(utf8::next(first, token.end()),
-						std::back_inserter(normal));
-					token = std::string(first, token.end());
-				} else {
-					break;
+			maximum.clear();
+			for (auto i = context.tokens_begin();
+				i != context.tokens_end(); ++i)
+				if (std::equal(i->begin(), i->end(), token.begin())) {
+					if (maximum.size() < i->size())
+						maximum = *i;
 				}
-			}
-			if (!normal.empty()) {
-				buffer.push_back(normal);
-				normal.clear();
-			}
-			if (!maximum.empty()) {
-				buffer.push_back(maximum);
+			if (maximum.empty()) {
 				auto first = token.begin();
-				utf8::advance(first,
-					utf8::distance(maximum.begin(), maximum.end()),
-					token.end());
+				utf8::append(utf8::next(first, token.end()),
+					std::back_inserter(normal));
 				token = std::string(first, token.end());
+			} else {
+				break;
 			}
 		}
-		return;
+		if (!normal.empty()) {
+			buffer.push_back(normal);
+			normal.clear();
+		}
+		if (!maximum.empty()) {
+			buffer.push_back(maximum);
+			auto first = token.begin();
+			utf8::advance(first,
+				utf8::distance(maximum.begin(), maximum.end()),
+				token.end());
+			token = std::string(first, token.end());
+		}
 	}
-
-	buffer.push_back(token);
 
 }
 
