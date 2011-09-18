@@ -89,7 +89,7 @@ std::shared_ptr<Term> Context::get_word(std::shared_ptr<Term> raw_name) {
 std::shared_ptr<Term> Context::peek() const {
 	if (terms.empty())
 		return std::make_shared<Term>();
-	return terms.top();
+	return terms.back();
 }
 
 /**
@@ -98,8 +98,8 @@ std::shared_ptr<Term> Context::peek() const {
 std::shared_ptr<Term> Context::pop() {
 	if (terms.empty())
 		return std::make_shared<Term>();
-	auto top = terms.top();
-	terms.pop();
+	auto top = terms.back();
+	terms.pop_back();
 	return top;
 }
 
@@ -107,7 +107,7 @@ std::shared_ptr<Term> Context::pop() {
  * Pushes the given value to the stack.
  */
 void Context::push(std::shared_ptr<Term> value) {
-	terms.push(value);
+	terms.push_back(value);
 }
 
 /**

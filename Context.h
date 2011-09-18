@@ -1,15 +1,15 @@
 #ifndef CONTEXT_H
 #define CONTEXT_H
 #include "Term.h"
+#include <deque>
 #include <map>
 #include <memory>
-#include <stack>
 #include <vector>
 
 class Context {
 
 	std::map<std::string, std::shared_ptr<Term>> words;
-	std::stack<std::shared_ptr<Term>> terms;
+	std::deque<std::shared_ptr<Term>> terms;
 	std::vector<std::string> tokens;
 
 	enum stream_type {
