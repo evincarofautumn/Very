@@ -8,7 +8,7 @@
 #include "Reader.h"
 #include "Tokenizer.h"
 #include "term_stack.h"
-#include "run_stack.h"
+#include "Interpreter.h"
 
 /**
  * Forces lazy computation expressed through stack composition.

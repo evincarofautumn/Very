@@ -1,8 +1,8 @@
 /**
- * @file run_stack.h
+ * @file Interpreter.h
  */
-#ifndef RUN_STACK_H
-#define RUN_STACK_H
+#ifndef INTERPRETER_H
+#define INTERPRETER_H
 
 class Context;
 class term_stack;
@@ -10,11 +10,11 @@ class term_stack;
 /**
  * Lazily evaluates a Term stack.
  */
-class run_stack {
+class Interpreter {
 	term_stack& source;
 	Context& context;
 public:
-	run_stack(term_stack&, Context&);
+	Interpreter(term_stack&, Context&);
 	bool empty() const;
 	void pop();
 };

@@ -22,7 +22,7 @@ int main(int argc, char** argv) try {
 	Reader reader(stream);
 	Tokenizer tokenizer(reader, context);
 	term_stack parser(tokenizer);
-	run_stack interpreter(parser, context);
+	Interpreter interpreter(parser, context);
 	force(interpreter);
 
 } catch (const std::runtime_error& error) {
