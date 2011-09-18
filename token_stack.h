@@ -16,9 +16,9 @@ class input_stack;
  * Converts a UTF-32 character sequence to UTF-8 tokens.
  */
 class token_stack {
-	input_stack&            source;
 	std::deque<std::string> buffer;
-	Context&                context;
+	input_stack& source;
+	Context& context;
 public:
 	token_stack(input_stack&, Context&);
 	bool empty() const;

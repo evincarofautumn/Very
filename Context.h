@@ -8,9 +8,9 @@
 
 class Context {
 
-	std::vector<std::string>                     tokens;
-	std::stack<std::shared_ptr<Term>>            terms;
 	std::map<std::string, std::shared_ptr<Term>> words;
+	std::stack<std::shared_ptr<Term>> terms;
+	std::vector<std::string> tokens;
 
 	enum stream_type {
 		ISTREAM,
