@@ -97,7 +97,7 @@ void Term::operator()(Context& context) {
 			break;
 		}
 	case DUP:
-		context.push(context.peek());
+		context.push(context.top());
 		break;
 	case POP:
 		context.pop();

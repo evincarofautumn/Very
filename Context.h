@@ -45,9 +45,9 @@ public:
 	std::ostream& get_output_port(uint32_t);
 	std::shared_ptr<Term> get_word(std::shared_ptr<Term>);
 
-	std::shared_ptr<Term> peek() const;
 	std::shared_ptr<Term> pop();
 	void push(std::shared_ptr<Term>);
+	std::shared_ptr<Term> top() const;
 
 	std::vector<std::string>::const_iterator tokens_begin() const;
 	std::vector<std::string>::const_iterator tokens_end() const;
