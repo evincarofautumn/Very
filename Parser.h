@@ -1,8 +1,8 @@
 /**
- * @file term_stack.h
+ * @file Parser.h
  */
-#ifndef TERM_STACK_H
-#define TERM_STACK_H
+#ifndef PARSER_H
+#define PARSER_H
 #include <deque>
 #include <memory>
 
@@ -12,12 +12,12 @@ class Tokenizer;
 /**
  * Parses a token sequence into terms.
  */
-class term_stack {
+class Parser {
 	std::shared_ptr<Tokenizer> source;
 	typedef std::deque<std::shared_ptr<Term>> buffer_type;
 	std::shared_ptr<buffer_type> buffer;
 public:
-	term_stack(Tokenizer&);
+	Parser(Tokenizer&);
 	bool empty() const;
 	void pop();
 	void push(std::shared_ptr<Term>);

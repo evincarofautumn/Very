@@ -7,7 +7,7 @@
 #define VERY_H
 #include "Reader.h"
 #include "Tokenizer.h"
-#include "term_stack.h"
+#include "Parser.h"
 #include "Interpreter.h"
 
 /**

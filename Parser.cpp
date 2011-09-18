@@ -1,38 +1,38 @@
-#include "term_stack.h"
+#include "Parser.h"
 #include "Term.h"
 #include "Tokenizer.h"
 
 /**
  * Gets the first Term from the source.
  */
-term_stack::term_stack(Tokenizer& stack)
+Parser::Parser(Tokenizer& stack)
 	: source(new Tokenizer(stack)), buffer(new buffer_type()) {}
 
 /**
  * End-of-range test.
  */
-bool term_stack::empty() const {
+bool Parser::empty() const {
 	return buffer->empty() && source->empty();
 }
 
 /**
  * Removes the current Term.
  */
-void term_stack::pop() {
+void Parser::pop() {
 	buffer->pop_front();
 }
 
 /**
  * Ungets a Term.
  */
-void term_stack::push(std::shared_ptr<Term> term) {
+void Parser::push(std::shared_ptr<Term> term) {
 	buffer->push_front(term);
 }
 
 /**
  * Gets the current Term.
  */
-std::shared_ptr<Term> term_stack::top() {
+std::shared_ptr<Term> Parser::top() {
 	if (buffer->empty()) read();
 	return buffer->front();
 }
@@ -40,13 +40,13 @@ std::shared_ptr<Term> term_stack::top() {
 /**
  * Reads a (possibly nested) Term from the source.
  */
-void term_stack::read() {
+void Parser::read() {
 	if (source->empty()) return;
 	std::shared_ptr<Term> term;
 	if (source->top() == "(") {
 		source->pop();
 		term.reset(new Term());
-		term_stack stack(*this);
+		Parser stack(*this);
 		while (!source->empty() && source->top() != ")") {
 			term->values.push_back(stack.top());
 			stack.pop();

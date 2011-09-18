@@ -21,7 +21,7 @@ int main(int argc, char** argv) try {
 	std::ifstream stream(argv[0]);
 	Reader reader(stream);
 	Tokenizer tokenizer(reader, context);
-	term_stack parser(tokenizer);
+	Parser parser(tokenizer);
 	Interpreter interpreter(parser, context);
 	force(interpreter);
 
