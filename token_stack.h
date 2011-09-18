@@ -3,7 +3,7 @@
  */
 #ifndef TOKEN_STACK_H
 #define TOKEN_STACK_H
-#include "Read.h"
+#include "Context.h"
 #include "ignore_iterator.h"
 #include <utf8.h>
 #include <deque>
@@ -17,9 +17,9 @@ template <class S>
 class token_stack {
 	S&                      source;
 	std::deque<std::string> buffer;
-	Read                    context;
+	Context&                context;
 public:
-	token_stack(S&);
+	token_stack(S&, Context&);
 	bool empty() const;
 	void pop();
 	void push(const std::string&);
@@ -40,7 +40,8 @@ private:
  * Ignores any BOM and gets the first token.
  */
 template<class S>
-token_stack<S>::token_stack(S& stack) : source(stack) {
+token_stack<S>::token_stack(S& stack, Context& context)
+	: source(stack), context(context) {
 	single(is<0xFEFF>);
 }
 
@@ -108,14 +109,15 @@ void token_stack<S>::read() {
 			throw std::runtime_error("Expected quoted token definition.");
 		if (buffer.front().size() == 1)
 			throw std::runtime_error("Invalid token definition.");
-		context.def(buffer.front().substr(1));
+		context.define_token(buffer.front().substr(1));
 	} else {
 		while (!token.empty()) {
 			std::string maximum;
 			std::string normal;
 			while (!token.empty()) {
 				maximum.clear();
-				for (auto i = context.begin(); i != context.end(); ++i)
+				for (auto i = context.tokens_begin();
+					i != context.tokens_end(); ++i)
 					if (std::equal(i->begin(), i->end(), token.begin())) {
 						if (maximum.size() < i->size())
 							maximum = *i;

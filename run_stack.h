@@ -5,16 +5,18 @@
 #define RUN_STACK_H
 #include "Run.h"
 
+class Context;
+
 /**
  * Lazily evaluates a Term stack.
  * @tparam S Source stack type.
  */
 template<class S>
 class run_stack {
-	S& source;
-	Run context;
+	S&       source;
+	Context& context;
 public:
-	run_stack(S&);
+	run_stack(S&, Context&);
 	bool empty() const;
 	void pop();
 };
@@ -24,7 +26,8 @@ public:
  * @param stack Source stack.
  */
 template<class S>
-run_stack<S>::run_stack(S& stack) : source(stack) {}
+run_stack<S>::run_stack(S& stack, Context& context)
+	: source(stack), context(context) {}
 
 /**
  * End-of-range test.

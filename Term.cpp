@@ -2,7 +2,7 @@
  * @file Term.cpp
  */
 #include "Term.h"
-#include "Run.h"
+#include "Context.h"
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
@@ -78,7 +78,7 @@ Term::Term(const std::string& token) {
  * Evaluates a Term.
  * @param context Evaluation context.
  */
-void Term::operator()(Run& context) {
+void Term::operator()(Context& context) {
 	if (is_value()) {
 		context.push(shared_from_this());
 		return;
@@ -88,12 +88,12 @@ void Term::operator()(Run& context) {
 		{
 			auto name = context.pop();
 			auto body = context.pop();
-			context.def(name, body);
+			context.define_word(name, body);
 			break;
 		}
 	case SYMBOL:
 		{
-			context.get(shared_from_this())->apply(context);
+			context.get_word(shared_from_this())->apply(context);
 			break;
 		}
 	case DUP:
@@ -130,7 +130,7 @@ void Term::operator()(Run& context) {
 			if (character->is_scalar() && port->is_scalar()) {
 				utf8::utf32to8(&character->tag, &character->tag + 1,
 					std::ostreambuf_iterator<char>
-					(context.output_port(port->tag)));
+					(context.get_output_port(port->tag)));
 			} else {
 				std::ostringstream message;
 				message << "putc does not understand arrays in:\n"
@@ -175,7 +175,7 @@ void Term::operator()(Run& context) {
  * Applies a Term to the stack.
  * @param context Evaluation context.
  */
-void Term::apply(Run& context) {
+void Term::apply(Context& context) {
 	if (is_scalar()) {
 		(*this)(context);
 	} else {

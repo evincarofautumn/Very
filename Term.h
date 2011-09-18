@@ -8,7 +8,7 @@
 #include <string>
 #include <vector>
 
-class Run;
+class Context;
 
 /**
  * A term in an expression.
@@ -47,8 +47,8 @@ public:
 	Term();
 	Term(int32_t);
 	Term(const std::string&);
-	void operator()(Run&);
-	void apply(Run&);
+	void operator()(Context&);
+	void apply(Context&);
 	Term& operator+=(const Term&);
 	Term& operator-=(const Term&);
 	Term& operator*=(const Term&);
