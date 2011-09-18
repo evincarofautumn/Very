@@ -1,7 +1,5 @@
 /**
  * @file very.h
- *
- * Typedefs for composing the necessary stacks to run a program.
  */
 #ifndef VERY_H
 #define VERY_H
