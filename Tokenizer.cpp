@@ -3,7 +3,7 @@
 /**
  * Ignores any BOM and gets the first token.
  */
-Tokenizer::Tokenizer(input_stack& stack, Context& context)
+Tokenizer::Tokenizer(Reader& stack, Context& context)
 	: source(stack), context(context) {
 	single(is<0xFEFF>);
 }

@@ -1,27 +1,27 @@
 /**
- * @file input_stack.cpp
+ * @file Reader.cpp
  */
-#include "input_stack.h"
+#include "Reader.h"
 #include <utf8.h>
 
 /**
  * Gets the first character from the stream.
  */
-input_stack::input_stack(std::istream& stream) : source(stream) {
+Reader::Reader(std::istream& stream) : source(stream) {
 	read();
 }
 
 /**
  * End-of-range test.
  */
-bool input_stack::empty() const {
+bool Reader::empty() const {
 	return buffer.empty();
 }
 
 /**
  * Removes the current character.
  */
-void input_stack::pop() {
+void Reader::pop() {
 	buffer.pop_front();
 	read();
 }
@@ -29,21 +29,21 @@ void input_stack::pop() {
 /**
  * Ungets a character.
  */
-void input_stack::push(uint32_t c) {
+void Reader::push(uint32_t c) {
 	buffer.push_front(c);
 }
 
 /**
  * Gets the current character.
  */
-uint32_t input_stack::top() const {
+uint32_t Reader::top() const {
 	return buffer.front();
 }
 
 /**
  * Reads and converts a character from the input stream.
  */
-void input_stack::read() {
+void Reader::read() {
 	std::istreambuf_iterator<char> end;
 	if (source == end) return;
 	buffer.push_back(utf8::next(source, end));

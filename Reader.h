@@ -1,8 +1,8 @@
 /**
- * @file input_stack.h
+ * @file Reader.h
  */
-#ifndef INPUT_STACK_H
-#define INPUT_STACK_H
+#ifndef READER_H
+#define READER_H
 #include <deque>
 #include <iosfwd>
 #include <iterator>
@@ -10,11 +10,11 @@
 /**
  * Adapts an input stream into a stack.
  */
-class input_stack {
+class Reader {
 	std::istreambuf_iterator<char> source;
 	std::deque<uint32_t> buffer;
 public:
-	input_stack(std::istream&);
+	Reader(std::istream&);
 	bool empty() const;
 	void pop();
 	void push(uint32_t);

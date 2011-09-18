@@ -19,7 +19,7 @@ int main(int argc, char** argv) try {
 
 	Context context;
 	std::ifstream stream(argv[0]);
-	input_stack reader(stream);
+	Reader reader(stream);
 	Tokenizer tokenizer(reader, context);
 	term_stack parser(tokenizer);
 	run_stack interpreter(parser, context);

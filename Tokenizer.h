@@ -5,22 +5,22 @@
 #define TOKENIZER_H
 #include "Context.h"
 #include "Ignorer.h"
-#include "input_stack.h"
+#include "Reader.h"
 #include <utf8.h>
 #include <deque>
 #include <string>
 
-class input_stack;
+class Reader;
 
 /**
  * Converts a UTF-32 character sequence to UTF-8 tokens.
  */
 class Tokenizer {
 	std::deque<std::string> buffer;
-	input_stack& source;
+	Reader& source;
 	Context& context;
 public:
-	Tokenizer(input_stack&, Context&);
+	Tokenizer(Reader&, Context&);
 	bool empty() const;
 	void pop();
 	void push(const std::string&);
