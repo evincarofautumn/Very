@@ -17,8 +17,12 @@ int main(int argc, char** argv) try {
 	if (argc != 1)
 		throw std::runtime_error("Invalid command line.");
 
-	std::ifstream stream(argv[0]);
-	force(interpreter(parser(tokenizer(reader(stream)))));
+	std::ifstream                     stream     (argv[0]);
+	input_stack                       reader     (stream);
+	token_stack <decltype(reader)>    tokenizer  (reader);
+	term_stack  <decltype(tokenizer)> parser     (tokenizer);
+	run_stack   <decltype(parser)>    interpreter(parser);
+	force(interpreter);
 
 } catch (const std::runtime_error& error) {
 

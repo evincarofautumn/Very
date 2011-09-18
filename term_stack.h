@@ -31,16 +31,14 @@ private:
  */
 template<class S>
 term_stack<S>::term_stack(S& stack)
-	: source(new S(stack)), buffer(new buffer_type()) {
-	read();
-}
+	: source(new S(stack)), buffer(new buffer_type()) {}
 
 /**
  * End-of-range test.
  */
 template<class S>
 bool term_stack<S>::empty() const {
-	return buffer->empty();
+	return buffer->empty() && source->empty();
 }
 
 /**
@@ -64,7 +62,7 @@ void term_stack<S>::push(std::shared_ptr<Term> term) {
  */
 template<class S>
 std::shared_ptr<Term> term_stack<S>::top() {
-	read();
+	if (buffer->empty()) read();
 	return buffer->front();
 }
 

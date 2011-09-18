@@ -23,7 +23,7 @@ public:
 	bool empty() const;
 	void pop();
 	void push(const std::string&);
-	const std::string& top() const;
+	const std::string& top();
 private:
 	void read();
 	void ignore_silence();
@@ -42,7 +42,6 @@ private:
 template<class S>
 token_stack<S>::token_stack(S& stack) : source(stack) {
 	single(is<0xFEFF>);
-	read();
 }
 
 /**
@@ -50,7 +49,7 @@ token_stack<S>::token_stack(S& stack) : source(stack) {
  */
 template<class S>
 bool token_stack<S>::empty() const {
-	return buffer.empty();
+	return buffer.empty() && source.empty();
 }
 
 /**
@@ -74,7 +73,8 @@ void token_stack<S>::push(const std::string& token) {
  * Gets the current token.
  */
 template<class S>
-const std::string& token_stack<S>::top() const {
+const std::string& token_stack<S>::top() {
+	if (buffer.empty()) read();
 	return buffer.front();
 }
 

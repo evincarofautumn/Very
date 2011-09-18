@@ -10,11 +10,6 @@
 #include "term_stack.h"
 #include "run_stack.h"
 
-typedef input_stack             reader;
-typedef token_stack <reader>    tokenizer;
-typedef term_stack  <tokenizer> parser;
-typedef run_stack   <parser>    interpreter;
-
 /**
  * Forces lazy computation expressed through stack composition.
  * @tparam S     Stack type.
