@@ -1,9 +1,9 @@
-#include "token_stack.h"
+#include "Tokenizer.h"
 
 /**
  * Ignores any BOM and gets the first token.
  */
-token_stack::token_stack(input_stack& stack, Context& context)
+Tokenizer::Tokenizer(input_stack& stack, Context& context)
 	: source(stack), context(context) {
 	single(is<0xFEFF>);
 }
@@ -11,14 +11,14 @@ token_stack::token_stack(input_stack& stack, Context& context)
 /**
  * End-of-range test.
  */
-bool token_stack::empty() const {
+bool Tokenizer::empty() const {
 	return buffer.empty() && source.empty();
 }
 
 /**
  * Removes the first token.
  */
-void token_stack::pop() {
+void Tokenizer::pop() {
 	buffer.pop_front();
 	read();
 }
@@ -26,14 +26,14 @@ void token_stack::pop() {
 /**
  * Ungets a token.
  */
-void token_stack::push(const std::string& token) {
+void Tokenizer::push(const std::string& token) {
 	buffer.push_front(token);
 }
 
 /**
  * Gets the current token.
  */
-const std::string& token_stack::top() {
+const std::string& Tokenizer::top() {
 	if (buffer.empty()) read();
 	return buffer.front();
 }
@@ -41,7 +41,7 @@ const std::string& token_stack::top() {
 /**
  * Reads a token from the source.
  */
-void token_stack::read() {
+void Tokenizer::read() {
 
 	if (source.empty()) return;
 
@@ -112,7 +112,7 @@ void token_stack::read() {
 /**
  * Ignores whitespace and comments.
  */
-void token_stack::ignore_silence() {
+void Tokenizer::ignore_silence() {
 	bool matched = true;
 	while (matched) {
 		matched = multiple(::isspace);

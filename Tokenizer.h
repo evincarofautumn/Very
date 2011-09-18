@@ -1,8 +1,8 @@
 /**
- * @file token_stack.h
+ * @file Tokenizer.h
  */
-#ifndef TOKEN_STACK_H
-#define TOKEN_STACK_H
+#ifndef TOKENIZER_H
+#define TOKENIZER_H
 #include "Context.h"
 #include "Ignorer.h"
 #include "input_stack.h"
@@ -15,12 +15,12 @@ class input_stack;
 /**
  * Converts a UTF-32 character sequence to UTF-8 tokens.
  */
-class token_stack {
+class Tokenizer {
 	std::deque<std::string> buffer;
 	input_stack& source;
 	Context& context;
 public:
-	token_stack(input_stack&, Context&);
+	Tokenizer(input_stack&, Context&);
 	bool empty() const;
 	void pop();
 	void push(const std::string&);
@@ -41,7 +41,7 @@ private:
  * Accepts a string token.
  */
 template<class O>
-bool token_stack::accept_string(O accept) {
+bool Tokenizer::accept_string(O accept) {
 	if (!single(is<'"'>, accept)) return false;
 	if (source.empty())
 		throw std::runtime_error
@@ -65,7 +65,7 @@ bool token_stack::accept_string(O accept) {
 /**
  * Matches any character.
  */
-inline bool token_stack::any(uint32_t) {
+inline bool Tokenizer::any(uint32_t) {
 	return true;
 }
 
@@ -73,7 +73,7 @@ inline bool token_stack::any(uint32_t) {
  * Matches a given character.
  */
 template<uint32_t C>
-bool token_stack::is(uint32_t c) {
+bool Tokenizer::is(uint32_t c) {
 	return c == C;
 }
 
@@ -81,14 +81,14 @@ bool token_stack::is(uint32_t c) {
  * Matches anything but a given character.
  */
 template<uint32_t C>
-bool token_stack::is_not(uint32_t c) {
+bool Tokenizer::is_not(uint32_t c) {
 	return c != C;
 }
 
 /**
  * Matches a word (identifier) character.
  */
-inline bool token_stack::is_word(uint32_t c) {
+inline bool Tokenizer::is_word(uint32_t c) {
 	return std::string(" \n\r\t\v()#").find(c) == std::string::npos;
 }
 
@@ -96,7 +96,7 @@ inline bool token_stack::is_word(uint32_t c) {
  * Accepts a single character matching a predicate.
  */
 template<class P, class O>
-bool token_stack::single(P predicate, O output) {
+bool Tokenizer::single(P predicate, O output) {
 	if (!source.empty() && predicate(source.top())) {
 		utf8::append(source.top(), output);
 		source.pop();
@@ -109,7 +109,7 @@ bool token_stack::single(P predicate, O output) {
  * Accepts multiple characters matching a predicate.
  */
 template<class P, class O>
-bool token_stack::multiple(P predicate, O output) {
+bool Tokenizer::multiple(P predicate, O output) {
 	bool matched = false;
 	while (!source.empty() && predicate(source.top())) {
 		matched = true;

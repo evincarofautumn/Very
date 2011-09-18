@@ -7,17 +7,17 @@
 #include <memory>
 
 class Term;
-class token_stack;
+class Tokenizer;
 
 /**
  * Parses a token sequence into terms.
  */
 class term_stack {
-	std::shared_ptr<token_stack> source;
+	std::shared_ptr<Tokenizer> source;
 	typedef std::deque<std::shared_ptr<Term>> buffer_type;
 	std::shared_ptr<buffer_type> buffer;
 public:
-	term_stack(token_stack&);
+	term_stack(Tokenizer&);
 	bool empty() const;
 	void pop();
 	void push(std::shared_ptr<Term>);

@@ -1,12 +1,12 @@
 #include "term_stack.h"
 #include "Term.h"
-#include "token_stack.h"
+#include "Tokenizer.h"
 
 /**
  * Gets the first Term from the source.
  */
-term_stack::term_stack(token_stack& stack)
-	: source(new token_stack(stack)), buffer(new buffer_type()) {}
+term_stack::term_stack(Tokenizer& stack)
+	: source(new Tokenizer(stack)), buffer(new buffer_type()) {}
 
 /**
  * End-of-range test.
