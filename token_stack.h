@@ -4,7 +4,7 @@
 #ifndef TOKEN_STACK_H
 #define TOKEN_STACK_H
 #include "Context.h"
-#include "ignore_iterator.h"
+#include "Ignorer.h"
 #include "input_stack.h"
 #include <utf8.h>
 #include <deque>
@@ -33,8 +33,8 @@ private:
 	template<uint32_t C> static bool is(uint32_t);
 	template<uint32_t C> static bool is_not(uint32_t);
 	static bool is_word(uint32_t);
-	template<class P, class O = ignore_iterator> bool single(P, O = O());
-	template<class P, class O = ignore_iterator> bool multiple(P, O = O());
+	template<class P, class O = Ignorer> bool single(P, O = O());
+	template<class P, class O = Ignorer> bool multiple(P, O = O());
 };
 
 /**
