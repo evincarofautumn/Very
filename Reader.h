@@ -11,8 +11,8 @@
  * Adapts an input stream into a stack.
  */
 class Reader {
-	std::istreambuf_iterator<char> source;
-	std::deque<uint32_t> buffer;
+	mutable std::istreambuf_iterator<char> source;
+	mutable std::deque<uint32_t> buffer;
 public:
 	Reader(std::istream&);
 	bool empty() const;
@@ -20,7 +20,7 @@ public:
 	void push(uint32_t);
 	uint32_t top() const;
 private:
-	void read();
+	void read() const;
 };
 
 #endif

@@ -8,16 +8,16 @@ class Parser;
 class Term;
 
 class Expander {
-	std::deque<std::shared_ptr<Term>> buffer;
+	mutable std::deque<std::shared_ptr<Term>> buffer;
+	mutable Parser& source;
 	Context& context;
-	Parser& source;
 public:
 	Expander(Parser&, Context&);
 	bool empty() const;
 	void pop();
-	std::shared_ptr<Term> top();
+	std::shared_ptr<Term> top() const;
 private:
-	void read();
+	void read() const;
 };
 
 #endif

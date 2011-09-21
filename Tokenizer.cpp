@@ -9,18 +9,19 @@ Tokenizer::Tokenizer(Reader& stack, Context& context)
 }
 
 /**
- * End-of-range test.
+ * End-of-range test. Must test for a failed call to read() because the last
+ * token can occur well before the last character.
  */
 bool Tokenizer::empty() const {
-	return buffer.empty() && source.empty();
+	return buffer.empty() && (source.empty() || !read());
 }
 
 /**
  * Removes the first token.
  */
 void Tokenizer::pop() {
+	if (buffer.empty()) read();
 	buffer.pop_front();
-	read();
 }
 
 /**
@@ -33,7 +34,7 @@ void Tokenizer::push(const std::string& token) {
 /**
  * Gets the current token.
  */
-const std::string& Tokenizer::top() {
+const std::string& Tokenizer::top() const {
 	if (buffer.empty()) read();
 	return buffer.front();
 }
@@ -41,21 +42,21 @@ const std::string& Tokenizer::top() {
 /**
  * Reads a token from the source.
  */
-void Tokenizer::read() {
+bool Tokenizer::read() const {
 
-	if (source.empty()) return;
+	if (source.empty()) return false;
 
 	std::string token;
 	auto accept = std::back_inserter(token);
 
 	ignore_silence();
-	if (source.empty()) return;
+	if (source.empty()) return false;
 
 	if (accept_string(accept)
 		|| single(is<'('>, accept)
 		|| single(is<')'>, accept)) {
 		buffer.push_back(token);
-		return;
+		return true;
 	}
 
 	multiple(is_word, accept);
@@ -94,12 +95,14 @@ void Tokenizer::read() {
 		}
 	}
 
+	return !buffer.empty();
+
 }
 
 /**
  * Ignores whitespace and comments.
  */
-void Tokenizer::ignore_silence() {
+void Tokenizer::ignore_silence() const {
 	bool matched = true;
 	while (matched) {
 		matched = multiple(::isspace);

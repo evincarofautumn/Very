@@ -16,32 +16,32 @@ class Reader;
  * Converts a UTF-32 character sequence to UTF-8 tokens.
  */
 class Tokenizer {
-	std::deque<std::string> buffer;
-	Reader& source;
+	mutable std::deque<std::string> buffer;
+	mutable Reader& source;
 	Context& context;
 public:
 	Tokenizer(Reader&, Context&);
 	bool empty() const;
 	void pop();
 	void push(const std::string&);
-	const std::string& top();
+	const std::string& top() const;
 private:
-	void read();
-	void ignore_silence();
-	template<class O> bool accept_string(O);
+	bool read() const;
+	void ignore_silence() const;
+	template<class O> bool accept_string(O) const;
 	static bool any(uint32_t);
 	template<uint32_t C> static bool is(uint32_t);
 	template<uint32_t C> static bool is_not(uint32_t);
 	static bool is_word(uint32_t);
-	template<class P, class O = Ignorer> bool single(P, O = O());
-	template<class P, class O = Ignorer> bool multiple(P, O = O());
+	template<class P, class O = Ignorer> bool single(P, O = O()) const;
+	template<class P, class O = Ignorer> bool multiple(P, O = O()) const;
 };
 
 /**
  * Accepts a string token.
  */
 template<class O>
-bool Tokenizer::accept_string(O accept) {
+bool Tokenizer::accept_string(O accept) const {
 	if (!single(is<'"'>, accept)) return false;
 	if (source.empty())
 		throw std::runtime_error
@@ -96,7 +96,7 @@ inline bool Tokenizer::is_word(uint32_t c) {
  * Accepts a single character matching a predicate.
  */
 template<class P, class O>
-bool Tokenizer::single(P predicate, O output) {
+bool Tokenizer::single(P predicate, O output) const {
 	if (!source.empty() && predicate(source.top())) {
 		utf8::append(source.top(), output);
 		source.pop();
@@ -109,7 +109,7 @@ bool Tokenizer::single(P predicate, O output) {
  * Accepts multiple characters matching a predicate.
  */
 template<class P, class O>
-bool Tokenizer::multiple(P predicate, O output) {
+bool Tokenizer::multiple(P predicate, O output) const {
 	bool matched = false;
 	while (!source.empty() && predicate(source.top())) {
 		matched = true;

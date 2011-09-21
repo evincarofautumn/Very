@@ -3,22 +3,23 @@
 #include "Parser.h"
 
 Expander::Expander(Parser& stack, Context& context)
-	: context(context), source(stack) {}
+	: source(stack), context(context) {}
 
 bool Expander::empty() const {
 	return buffer.empty() && source.empty();
 }
 
 void Expander::pop() {
+	if (buffer.empty()) read();
 	buffer.pop_front();
 }
 
-std::shared_ptr<Term> Expander::top() {
+std::shared_ptr<Term> Expander::top() const {
 	if (buffer.empty()) read();
 	return buffer.front();
 }
 
-void Expander::read() {
+void Expander::read() const {
 	if (source.empty()) return;
 	if (*source.top() == Term("_token")) {
 		context.define_token(buffer.back());

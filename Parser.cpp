@@ -19,6 +19,7 @@ bool Parser::empty() const {
  * Removes the current Term.
  */
 void Parser::pop() {
+	if (buffer->empty()) read();
 	buffer->pop_front();
 }
 
@@ -32,7 +33,7 @@ void Parser::push(std::shared_ptr<Term> term) {
 /**
  * Gets the current Term.
  */
-std::shared_ptr<Term> Parser::top() {
+std::shared_ptr<Term> Parser::top() const {
 	if (buffer->empty()) read();
 	return buffer->front();
 }
@@ -40,7 +41,7 @@ std::shared_ptr<Term> Parser::top() {
 /**
  * Reads a (possibly nested) Term from the source.
  */
-void Parser::read() {
+void Parser::read() const {
 	if (source->empty()) return;
 	std::shared_ptr<Term> term;
 	if (source->top() == "(") {

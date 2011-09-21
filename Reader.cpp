@@ -7,23 +7,21 @@
 /**
  * Gets the first character from the stream.
  */
-Reader::Reader(std::istream& stream) : source(stream) {
-	read();
-}
+Reader::Reader(std::istream& stream) : source(stream) {}
 
 /**
  * End-of-range test.
  */
 bool Reader::empty() const {
-	return buffer.empty();
+	return buffer.empty() && source == std::istreambuf_iterator<char>();
 }
 
 /**
  * Removes the current character.
  */
 void Reader::pop() {
+	if (buffer.empty()) read();
 	buffer.pop_front();
-	read();
 }
 
 /**
@@ -37,13 +35,14 @@ void Reader::push(uint32_t c) {
  * Gets the current character.
  */
 uint32_t Reader::top() const {
+	if (buffer.empty()) read();
 	return buffer.front();
 }
 
 /**
  * Reads and converts a character from the input stream.
  */
-void Reader::read() {
+void Reader::read() const {
 	std::istreambuf_iterator<char> end;
 	if (source == end) return;
 	buffer.push_back(utf8::next(source, end));

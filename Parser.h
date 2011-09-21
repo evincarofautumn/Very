@@ -21,9 +21,9 @@ public:
 	bool empty() const;
 	void pop();
 	void push(std::shared_ptr<Term>);
-	std::shared_ptr<Term> top();
+	std::shared_ptr<Term> top() const;
 private:
-	void read();
+	void read() const;
 };
 
 #endif
